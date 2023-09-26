@@ -35,7 +35,7 @@ class UserSeeder extends Seeder
                 'email' => strtolower("$firstName.$lastName@mail.it"),
                 'name' => "$firstName $lastName",
                 'role_id' => $userRoleId,
-                'password' => bcrypt(strtolower("$firstName $lastName")),
+                'password' => bcrypt(strtolower("$firstName.$lastName")),
             ]);
             $i++;
         }
