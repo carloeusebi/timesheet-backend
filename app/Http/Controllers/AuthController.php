@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Cookie;
+use Tymon\JWTAuth\Facades\JWTAuth;
 
 class AuthController extends Controller
 {
@@ -48,9 +50,8 @@ class AuthController extends Controller
 
     protected function createNewToken(string $token)
     {
-        return response()->json([
-            'accessToken' => $token,
-            'user' => Auth::user()
-        ]);
+        $cookie = cookie('token', $token, 60);
+
+        return response()->json(Auth::user())->withCookie($cookie);
     }
 }

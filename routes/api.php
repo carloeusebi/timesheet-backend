@@ -26,8 +26,8 @@ Route::prefix('auth')->group(function () {
 
 
 Route::middleware('auth:api')->group(function () {
-    Route::apiResource('projects', ProjectController::class);
     Route::apiResource('timesheets', TimesheetController::class);
+    Route::apiResource('projects', ProjectController::class);
     Route::apiResource('activities', ActivityController::class);
     Route::apiResource('users', UserController::class);
 });
