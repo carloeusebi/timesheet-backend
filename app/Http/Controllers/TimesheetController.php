@@ -20,24 +20,28 @@ class TimesheetController extends Controller
          */
         $user = Auth::user();
 
-        // Every user gets its profiled timesheets research: Admin can search between all timesheets OR can filter by User; User can see only its timesheets.
-        $userFilter = $user->isAdmin() ? $request->get('user') : $user->id;
 
         // The Query parameters
+        $userFilter = $request->get('employee'); //param name is employee, to improve query string readability
         $projectFilter = $request->get('project');
         $activityFilter = $request->get('activity');
         $dateFrom = $request->get('dateFrom');
         $dateTo = $request->get('dateTo');
 
-        // IF there is a userFilter (User is not Admin OR User is Admin and wants to filter results by User), filter the results, otherwise don't filter by User.
-        $query = $userFilter ? Timesheet::where('user_id', $userFilter) : Timesheet::select();
+        // Every user gets its profiled timesheets research: Admin can search between all timesheets OR can filter by User; User can see only its timesheets.
+        $query = $user->isAdmin() ? Timesheet::select() : Timesheet::where('user_id', $user->id);
+
+        $query->with('user', 'project', 'activity');
 
         // Building the query
+        if ($userFilter && $user->isAdmin()) {
+            $query->whereRelation('user', 'name', 'like', "%$userFilter%");
+        }
         if ($projectFilter) {
-            $query->where('project_id', $projectFilter);
+            $query->whereRelation('project', 'name', 'like', "%$projectFilter%");
         }
         if ($activityFilter) {
-            $query->where('activity_id', $activityFilter);
+            $query->whereRelation('activity', 'name', 'like', "%$activityFilter%");
         }
         if ($dateFrom) {
             $query->where('date', '>', $dateFrom);

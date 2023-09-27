@@ -2,10 +2,9 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Cookie;
-use Tymon\JWTAuth\Facades\JWTAuth;
 
 class AuthController extends Controller
 {
@@ -25,7 +24,12 @@ class AuthController extends Controller
             return response(['message' => 'Invalid credentials'], 401);
         }
 
-        return $this->createNewToken($token);
+        /**
+         * @var User
+         */
+        $user = Auth::user();
+        $user->load('role');
+        return $this->respondWithToken($user, $token);
     }
 
 
@@ -48,10 +52,9 @@ class AuthController extends Controller
     }
 
 
-    protected function createNewToken(string $token)
+    protected function respondWithToken(User $user, string $token)
     {
         $cookie = cookie('token', $token, 60);
-
-        return response()->json(Auth::user())->withCookie($cookie);
+        return response()->json($user)->withCookie($cookie);
     }
 }

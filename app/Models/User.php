@@ -45,8 +45,6 @@ class User extends Authenticatable implements JWTSubject
         'password' => 'hashed',
     ];
 
-    protected $with = ['role'];
-
     /**
      * Get the identifier that will be stored in the subject claim of the JWT.
      *
