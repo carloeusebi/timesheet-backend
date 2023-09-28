@@ -9,7 +9,7 @@ class Timesheet extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['user_id', 'project_id', 'activity_id', 'date', 'hours', 'description'];
+    protected $fillable = ['user_id', 'project_id', 'activity_id', 'activity_start', 'activity_end', 'description'];
 
     protected $with = ['user', 'project', 'activity'];
 

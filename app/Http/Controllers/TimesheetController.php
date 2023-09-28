@@ -28,7 +28,7 @@ class TimesheetController extends Controller
         $dateFrom = $request->get('date_from');
         $dateTo = $request->get('date_to');
 
-        $query = Timesheet::orderBy('date', 'desc');
+        $query = Timesheet::orderBy('activity_start', 'desc');
         // Every user gets its profiled timesheets research: Admin can search between all timesheets OR can filter by User; User can see only its timesheets.
 
         if (!$user->isAdmin())
@@ -45,10 +45,10 @@ class TimesheetController extends Controller
             $query->whereRelation('activity', 'name', 'like', "%$activityFilter%");
         }
         if ($dateFrom) {
-            $query->where('date', '>', $dateFrom);
+            $query->where('activity_start', '>', $dateFrom);
         }
         if ($dateTo) {
-            $query->where('date', '<', $dateTo);
+            $query->where('activity_end', '<', $dateTo);
         }
         $timesheets = $query->paginate(10);
 
@@ -74,7 +74,7 @@ class TimesheetController extends Controller
     public function show(string $id)
     {
         $timesheet = Timesheet::findOrFail($id);
-        return ($timesheet);
+        return response()->json($timesheet);
     }
 
     /**

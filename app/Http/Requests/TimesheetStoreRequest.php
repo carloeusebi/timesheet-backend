@@ -2,7 +2,9 @@
 
 namespace App\Http\Requests;
 
+use App\Models\Project;
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Validation\Validator;
 
 class TimesheetStoreRequest extends FormRequest
 {
@@ -22,6 +24,8 @@ class TimesheetStoreRequest extends FormRequest
         return [
             'project_id' => 'project',
             'activity_id' => 'activity',
+            'activity_start' => 'activity start',
+            'activity_end' => 'activity end',
         ];
     }
 
@@ -35,9 +39,30 @@ class TimesheetStoreRequest extends FormRequest
         return [
             'project_id' => 'required|exists:projects,id',
             'activity_id' => 'required|exists:activities,id',
-            'date' => 'required|date',
-            'hours' => 'required|numeric|min:1|max:8',
+            'activity_start' => 'required|date',
+            'activity_end' => 'required|date',
             'description' => 'required'
         ];
+    }
+
+    /**
+     * Performs additional validation.
+     * 
+     * Checks that the Activity-Project relation exists for the chosen activity.
+     */
+    public function withValidator(Validator $validator)
+    {
+        if ($validator->errors()->all()) return;
+
+        $validator->after(function ($validator) {
+            $projectId = $this->input('project_id');
+            $activityId = $this->input('activity_id');
+
+            $relationExists = Project::find($projectId)->activities()->where('activity_id', $activityId)->count();
+
+            if (!$relationExists) {
+                $validator->errors()->add('activity_id', 'Activity doesn\'t exists on Project');
+            }
+        });
     }
 }

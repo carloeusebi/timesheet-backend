@@ -2,7 +2,6 @@
 
 namespace App\Http\Requests;
 
-use App\Models\Activity;
 use App\Models\Project;
 use App\Models\Timesheet;
 use Illuminate\Foundation\Http\FormRequest;
@@ -20,6 +19,19 @@ class TimesheetUpdateRequest extends FormRequest
     }
 
     /**
+     * Removes the id form the field name to make the names more user friendly.
+     */
+    public function attributes()
+    {
+        return [
+            'project_id' => 'project',
+            'activity_id' => 'activity',
+            'activity_start' => 'activity start',
+            'activity_end' => 'activity end',
+        ];
+    }
+
+    /**
      * Get the validation rules that apply to the request.
      *
      * @return array<string, \Illuminate\Contracts\Validation\ValidationRule|array<mixed>|string>
@@ -29,20 +41,9 @@ class TimesheetUpdateRequest extends FormRequest
         return [
             'project_id' => 'required|exists:projects,id',
             'activity_id' => 'required|exists:activities,id',
-            'date' => 'required|date',
-            'hours' => 'required|numeric|min:1|max:8',
+            'activity_start' => 'required|date',
+            'activity_end' => 'required|date',
             'description' => 'required'
-        ];
-    }
-
-    /**
-     * Removes the id form the field name to make the names more user friendly.
-     */
-    public function attributes()
-    {
-        return [
-            'project_id' => 'project',
-            'activity_id' => 'activity',
         ];
     }
 
