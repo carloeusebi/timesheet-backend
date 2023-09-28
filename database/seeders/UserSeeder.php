@@ -31,12 +31,21 @@ class UserSeeder extends Seeder
             $firstName = $faker->firstName();
             $lastName = $faker->lastName();
 
-            User::create([
-                'email' => strtolower("$firstName.$lastName@mail.it"),
-                'name' => "$firstName $lastName",
-                'role_id' => $userRoleId,
-                'password' => bcrypt(strtolower("$firstName.$lastName")),
-            ]);
+            if ($i === 0) {
+                User::create([
+                    'email' => 'carloeusebi@gmail.com',
+                    'name' => 'Carlo Eusebi',
+                    'role_id' => $userRoleId,
+                    'password' => bcrypt('12345678'),
+                ]);
+            } else {
+                User::create([
+                    'email' => strtolower("$firstName.$lastName@mail.it"),
+                    'name' => "$firstName $lastName",
+                    'role_id' => $userRoleId,
+                    'password' => bcrypt(strtolower("$firstName.$lastName")),
+                ]);
+            }
             $i++;
         }
     }

@@ -50,8 +50,8 @@ class ProjectController extends Controller
      */
     public function show(string $id)
     {
-        // this is not used at the moment.
-        return response(status: 404);
+        $project = Project::with('users')->findOrFail($id);
+        return response()->json($project);
     }
 
     /**
