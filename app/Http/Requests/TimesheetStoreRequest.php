@@ -15,6 +15,17 @@ class TimesheetStoreRequest extends FormRequest
     }
 
     /**
+     * Removes the id form the field name to make the names more user friendly.
+     */
+    public function attributes()
+    {
+        return [
+            'project_id' => 'project',
+            'activity_id' => 'activity',
+        ];
+    }
+
+    /**
      * Get the validation rules that apply to the request.
      *
      * @return array<string, \Illuminate\Contracts\Validation\ValidationRule|array<mixed>|string>

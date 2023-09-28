@@ -36,6 +36,17 @@ class TimesheetUpdateRequest extends FormRequest
     }
 
     /**
+     * Removes the id form the field name to make the names more user friendly.
+     */
+    public function attributes()
+    {
+        return [
+            'project_id' => 'project',
+            'activity_id' => 'activity',
+        ];
+    }
+
+    /**
      * Performs additional validation.
      * 
      * Checks that the Activity-Project relation exists for the chosen activity.
