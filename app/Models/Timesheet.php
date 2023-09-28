@@ -11,6 +11,8 @@ class Timesheet extends Model
 
     protected $fillable = ['user_id', 'project_id', 'activity_id', 'date', 'hours', 'description'];
 
+    protected $with = ['user', 'project', 'activity'];
+
     public function user()
     {
         return $this->belongsTo(User::class);

@@ -11,6 +11,8 @@ class Project extends Model
 
     protected $fillable = ['name'];
 
+    protected $with = ['activities'];
+
     public function activities()
     {
         return $this->belongsToMany(Activity::class);

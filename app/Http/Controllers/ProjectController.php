@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Http\Requests\ProjectStoreRequest;
 use App\Http\Requests\ProjectUpdateRequest;
 use App\Models\Project;
+use Illuminate\Support\Facades\Auth;
 
 class ProjectController extends Controller
 {
@@ -21,7 +22,13 @@ class ProjectController extends Controller
      */
     public function index()
     {
-        $projects = Project::all();
+        /**
+         * @var User
+         */
+        $user = Auth::user();
+
+        // if user is employee (user) return only the projects assigned to him.
+        $projects = $user->isAdmin() ? Project::all() : Project::whereRelation('users', 'users.id', $user->id)->get();
         return response()->json($projects);
     }
 

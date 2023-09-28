@@ -2,8 +2,11 @@
 
 namespace App\Http\Requests;
 
+use App\Models\Activity;
+use App\Models\Project;
 use App\Models\Timesheet;
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Validation\Validator;
 
 class TimesheetUpdateRequest extends FormRequest
 {
@@ -30,5 +33,24 @@ class TimesheetUpdateRequest extends FormRequest
             'hours' => 'required|numeric|min:1|max:8',
             'description' => 'required'
         ];
+    }
+
+    /**
+     * Performs additional validation.
+     * 
+     * Checks that the Activity-Project relation exists for the chosen activity.
+     */
+    public function withValidator(Validator $validator)
+    {
+        $validator->after(function ($validator) {
+            $projectId = $this->input('project_id');
+            $activityId = $this->input('activity_id');
+
+            $relationExists = Project::find($projectId)->activities()->where('activity_id', $activityId)->count();
+
+            if (!$relationExists) {
+                $validator->errors()->add('activity_id', 'Activity doesn\'t exists on Project');
+            }
+        });
     }
 }

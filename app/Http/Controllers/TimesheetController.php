@@ -25,13 +25,14 @@ class TimesheetController extends Controller
         $userFilter = $request->get('employee'); //param name is employee, to improve query string readability
         $projectFilter = $request->get('project');
         $activityFilter = $request->get('activity');
-        $dateFrom = $request->get('dateFrom');
-        $dateTo = $request->get('dateTo');
+        $dateFrom = $request->get('date_from');
+        $dateTo = $request->get('date_to');
 
+        $query = Timesheet::orderBy('date', 'desc');
         // Every user gets its profiled timesheets research: Admin can search between all timesheets OR can filter by User; User can see only its timesheets.
-        $query = $user->isAdmin() ? Timesheet::select() : Timesheet::where('user_id', $user->id);
 
-        $query->with('user', 'project', 'activity');
+        if (!$user->isAdmin())
+            $query->where('user_id', $user->id);
 
         // Building the query
         if ($userFilter && $user->isAdmin()) {
@@ -69,11 +70,11 @@ class TimesheetController extends Controller
 
     /**
      * Display the specified resource.
-     * For now no show is implemented.
      */
     public function show(string $id)
     {
-        return response(status: 404);
+        $timesheet = Timesheet::findOrFail($id);
+        return ($timesheet);
     }
 
     /**
@@ -86,7 +87,9 @@ class TimesheetController extends Controller
             return response()->json(['errors' => 'Timesheet not found'], 404);
         }
 
+        // updates the relations
         $timesheet->update($request->all());
+        $timesheet->load('activity', 'project');
 
         return response()->json($timesheet);
     }
