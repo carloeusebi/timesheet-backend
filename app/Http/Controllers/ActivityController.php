@@ -17,7 +17,7 @@ class ActivityController extends Controller
     }
 
     /**
-     * Display a listing of the resource.
+     * List all the activities.
      */
     public function index()
     {
@@ -26,7 +26,7 @@ class ActivityController extends Controller
     }
 
     /**
-     * Store a newly created resource in storage.
+     * Create a new Activity.
      */
     public function store(Request $request)
     {
@@ -36,20 +36,21 @@ class ActivityController extends Controller
 
         $activity = Activity::create($request->only('name'));
 
+        return response()->json($activity, 201);
+    }
+
+    /**
+     * Display the specified Activity.
+     */
+    public function show(string $id)
+    {
+        $activity = Activity::findOrFail($id);
+
         return response()->json($activity);
     }
 
     /**
-     * Display the specified resource.
-     */
-    public function show(string $id)
-    {
-        // this is not used at the moment.
-        return response(status: 404);
-    }
-
-    /**
-     * Update the specified resource in storage.
+     * Update at existing Activity.
      */
     public function update(Request $request, string $id)
     {
@@ -64,7 +65,7 @@ class ActivityController extends Controller
     }
 
     /**
-     * Remove the specified resource from storage.
+     * Delete the specified Activity.
      */
     public function destroy(string $id)
     {

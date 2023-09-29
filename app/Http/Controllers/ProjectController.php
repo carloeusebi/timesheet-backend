@@ -18,7 +18,9 @@ class ProjectController extends Controller
     }
 
     /**
-     * Display a listing of the resource.
+     * Returns a list of Projects.
+     * 
+     * Returns all the Users associated Projects. If User is Admin returns all the Projects.
      */
     public function index()
     {
@@ -33,7 +35,7 @@ class ProjectController extends Controller
     }
 
     /**
-     * Store a newly created resource in storage.
+     * Create a new Project.
      */
     public function store(ProjectStoreRequest $request)
     {
@@ -42,11 +44,11 @@ class ProjectController extends Controller
         $project->activities()->attach($request->activity_ids);
         $project->users()->attach($request->user_ids);
 
-        return response()->json($project->load('users')->load('activities'));
+        return response()->json($project->load('users')->load('activities'), 201);
     }
 
     /**
-     * Display the specified resource.
+     * Display the specified Project.
      */
     public function show(string $id)
     {
@@ -55,7 +57,7 @@ class ProjectController extends Controller
     }
 
     /**
-     * Update the specified resource in storage.
+     * Update an existing Project.
      */
     public function update(ProjectUpdateRequest $request, string $id)
     {
@@ -70,7 +72,7 @@ class ProjectController extends Controller
     }
 
     /**
-     * Remove the specified resource from storage.
+     * Remove an existing Project.
      */
     public function destroy(string $id)
     {

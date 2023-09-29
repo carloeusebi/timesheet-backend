@@ -1,0 +1,602 @@
+openapi: 3.0.3
+info:
+  title: Laravel
+  description: ''
+  version: 1.0.0
+servers:
+  -
+    url: 'http://localhost'
+paths:
+  /api/auth/login:
+    post:
+      summary: 'Attempt login.'
+      operationId: attemptLogin
+      description: ''
+      parameters: []
+      responses: {  }
+      tags:
+        - Endpoints
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                email:
+                  type: string
+                  description: 'Must be a valid email address.'
+                  example: estracke@example.org
+                password:
+                  type: string
+                  description: ''
+                  example: autem
+              required:
+                - email
+                - password
+      security: []
+  /api/auth/logout:
+    post:
+      summary: 'Logout the User.'
+      operationId: logoutTheUser
+      description: ''
+      parameters: []
+      responses: {  }
+      tags:
+        - Endpoints
+      security: []
+  /api/auth/user:
+    get:
+      summary: 'Get the authenticated User.'
+      operationId: getTheAuthenticatedUser
+      description: ''
+      parameters: []
+      responses:
+        401:
+          description: ''
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  message: Unauthenticated.
+                properties:
+                  message:
+                    type: string
+                    example: Unauthenticated.
+      tags:
+        - Endpoints
+      security: []
+  /api/timesheets:
+    get:
+      summary: 'List the Timesheets.'
+      operationId: listTheTimesheets
+      description: 'Returns all the User associated Timesheets. If User is Admin retruns all the Timesheets.'
+      parameters:
+        -
+          in: query
+          name: 'filters[employee]'
+          description: 'Filters by employee name.'
+          example: 'Carlo Eusebi'
+          required: false
+          schema:
+            type: string
+            description: 'Filters by employee name.'
+            example: 'Carlo Eusebi'
+        -
+          in: query
+          name: 'filters[project]'
+          description: 'Filters by project name.'
+          example: Youvolution
+          required: false
+          schema:
+            type: string
+            description: 'Filters by project name.'
+            example: Youvolution
+        -
+          in: query
+          name: 'filters[activity]'
+          description: 'Filters by activity name.'
+          example: Development
+          required: false
+          schema:
+            type: string
+            description: 'Filters by activity name.'
+            example: Development
+        -
+          in: query
+          name: 'filters[dateFrom]'
+          description: 'Filters by date.'
+          example: '2023-28-09'
+          required: false
+          schema:
+            type: string
+            description: 'Filters by date.'
+            example: '2023-28-09'
+        -
+          in: query
+          name: 'filters[dateTo]'
+          description: 'Filters by date.'
+          example: '2023-29-09'
+          required: false
+          schema:
+            type: string
+            description: 'Filters by date.'
+            example: '2023-29-09'
+      responses:
+        401:
+          description: ''
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  message: Unauthenticated.
+                properties:
+                  message:
+                    type: string
+                    example: Unauthenticated.
+      tags:
+        - Endpoints
+      security: []
+    post:
+      summary: 'Log a new timesheet.'
+      operationId: logANewTimesheet
+      description: ''
+      parameters: []
+      responses: {  }
+      tags:
+        - Endpoints
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                project_id:
+                  type: string
+                  description: 'The ID of the Project.'
+                  example: '1'
+                activity_id:
+                  type: string
+                  description: 'The ID of the Activity.'
+                  example: '1'
+                activity_start:
+                  type: string
+                  description: 'Must be a valid date.'
+                  example: '2023-09-29T07:14:22'
+                activity_end:
+                  type: string
+                  description: 'Must be a valid date.'
+                  example: '2023-09-29T07:14:22'
+                description:
+                  type: string
+                  description: ''
+                  example: perspiciatis
+              required:
+                - project_id
+                - activity_id
+                - activity_start
+                - activity_end
+                - description
+      security: []
+  '/api/timesheets/{id}':
+    get:
+      summary: 'Display the specified Timesheet.'
+      operationId: displayTheSpecifiedTimesheet
+      description: ''
+      parameters: []
+      responses:
+        401:
+          description: ''
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  message: Unauthenticated.
+                properties:
+                  message:
+                    type: string
+                    example: Unauthenticated.
+      tags:
+        - Endpoints
+      security: []
+    put:
+      summary: 'Updates an existing Timesheet.'
+      operationId: updatesAnExistingTimesheet
+      description: ''
+      parameters: []
+      responses: {  }
+      tags:
+        - Endpoints
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                project_id:
+                  type: string
+                  description: ''
+                  example: ea
+                activity_id:
+                  type: string
+                  description: ''
+                  example: aut
+                activity_start:
+                  type: string
+                  description: 'Must be a valid date.'
+                  example: '2023-09-29T07:14:22'
+                activity_end:
+                  type: string
+                  description: 'Must be a valid date.'
+                  example: '2023-09-29T07:14:22'
+                description:
+                  type: string
+                  description: ''
+                  example: placeat
+              required:
+                - project_id
+                - activity_id
+                - activity_start
+                - activity_end
+                - description
+      security: []
+    parameters:
+      -
+        in: path
+        name: id
+        description: 'The ID of the timesheet.'
+        example: minus
+        required: true
+        schema:
+          type: string
+  /api/projects:
+    get:
+      summary: 'Returns a list of Projects.'
+      operationId: returnsAListOfProjects
+      description: 'Returns all the Users associated Projects. If User is Admin returns all the Projects.'
+      parameters: []
+      responses:
+        401:
+          description: ''
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  message: Unauthenticated.
+                properties:
+                  message:
+                    type: string
+                    example: Unauthenticated.
+      tags:
+        - Endpoints
+      security: []
+    post:
+      summary: 'Create a new Project.'
+      operationId: createANewProject
+      description: ''
+      parameters: []
+      responses: {  }
+      tags:
+        - Endpoints
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                  description: ''
+                  example: ex
+                user_ids:
+                  type: string
+                  description: ''
+                  example: null
+                activity_ids:
+                  type: string
+                  description: ''
+                  example: null
+              required:
+                - name
+      security: []
+  '/api/projects/{id}':
+    get:
+      summary: 'Display the specified Project.'
+      operationId: displayTheSpecifiedProject
+      description: ''
+      parameters: []
+      responses:
+        401:
+          description: ''
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  message: Unauthenticated.
+                properties:
+                  message:
+                    type: string
+                    example: Unauthenticated.
+      tags:
+        - Endpoints
+      security: []
+    put:
+      summary: 'Update an existing Project.'
+      operationId: updateAnExistingProject
+      description: ''
+      parameters: []
+      responses: {  }
+      tags:
+        - Endpoints
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                  description: ''
+                  example: ipsum
+                user_ids:
+                  type: string
+                  description: ''
+                  example: null
+                activity_ids:
+                  type: string
+                  description: ''
+                  example: null
+              required:
+                - name
+      security: []
+    delete:
+      summary: 'Remove an existing Project.'
+      operationId: removeAnExistingProject
+      description: ''
+      parameters: []
+      responses: {  }
+      tags:
+        - Endpoints
+      security: []
+    parameters:
+      -
+        in: path
+        name: id
+        description: 'The ID of the project.'
+        example: dolor
+        required: true
+        schema:
+          type: string
+  /api/activities:
+    get:
+      summary: 'List all the activities.'
+      operationId: listAllTheActivities
+      description: ''
+      parameters: []
+      responses:
+        401:
+          description: ''
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  message: Unauthenticated.
+                properties:
+                  message:
+                    type: string
+                    example: Unauthenticated.
+      tags:
+        - Endpoints
+      security: []
+    post:
+      summary: 'Create a new Activity.'
+      operationId: createANewActivity
+      description: ''
+      parameters: []
+      responses: {  }
+      tags:
+        - Endpoints
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                  description: ''
+                  example: sint
+              required:
+                - name
+      security: []
+  '/api/activities/{id}':
+    get:
+      summary: 'Display the specified Activity.'
+      operationId: displayTheSpecifiedActivity
+      description: ''
+      parameters: []
+      responses:
+        401:
+          description: ''
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  message: Unauthenticated.
+                properties:
+                  message:
+                    type: string
+                    example: Unauthenticated.
+      tags:
+        - Endpoints
+      security: []
+    put:
+      summary: 'Update at existing Activity.'
+      operationId: updateAtExistingActivity
+      description: ''
+      parameters: []
+      responses: {  }
+      tags:
+        - Endpoints
+      requestBody:
+        required: false
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                  description: ''
+                  example: null
+      security: []
+    delete:
+      summary: 'Delete the specified Activity.'
+      operationId: deleteTheSpecifiedActivity
+      description: ''
+      parameters: []
+      responses: {  }
+      tags:
+        - Endpoints
+      security: []
+    parameters:
+      -
+        in: path
+        name: id
+        description: 'The ID of the activity.'
+        example: qui
+        required: true
+        schema:
+          type: string
+  /api/users:
+    get:
+      summary: 'Return a list of the the Users.'
+      operationId: returnAListOfTheTheUsers
+      description: ''
+      parameters: []
+      responses:
+        401:
+          description: ''
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  message: Unauthenticated.
+                properties:
+                  message:
+                    type: string
+                    example: Unauthenticated.
+      tags:
+        - Endpoints
+      security: []
+    post:
+      summary: 'Create a new User.'
+      operationId: createANewUser
+      description: ''
+      parameters: []
+      responses: {  }
+      tags:
+        - Endpoints
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                  description: ''
+                  example: voluptatem
+                email:
+                  type: string
+                  description: 'Must be a valid email address.'
+                  example: joesph88@example.net
+              required:
+                - name
+                - email
+      security: []
+  '/api/users/{id}':
+    get:
+      summary: 'Return the specified User.'
+      operationId: returnTheSpecifiedUser
+      description: ''
+      parameters: []
+      responses:
+        401:
+          description: ''
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  message: Unauthenticated.
+                properties:
+                  message:
+                    type: string
+                    example: Unauthenticated.
+      tags:
+        - Endpoints
+      security: []
+    put:
+      summary: 'Update an existing user.'
+      operationId: updateAnExistingUser
+      description: ''
+      parameters: []
+      responses: {  }
+      tags:
+        - Endpoints
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                  description: ''
+                  example: rerum
+                email:
+                  type: string
+                  description: 'Must be a valid email address.'
+                  example: mercedes.marvin@example.org
+              required:
+                - name
+                - email
+      security: []
+    delete:
+      summary: 'Remove the specified User.'
+      operationId: removeTheSpecifiedUser
+      description: ''
+      parameters: []
+      responses: {  }
+      tags:
+        - Endpoints
+      security: []
+    parameters:
+      -
+        in: path
+        name: id
+        description: 'The ID of the user.'
+        example: sit
+        required: true
+        schema:
+          type: string
+tags:
+  -
+    name: Endpoints
+    description: ''

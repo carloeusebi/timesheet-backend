@@ -11,7 +11,17 @@ use Illuminate\Support\Facades\Auth;
 class TimesheetController extends Controller
 {
     /**
-     * Display a listing of the resource.
+     * List the Timesheets.
+     * 
+     * Returns all the User associated Timesheets. If User is Admin retruns all the Timesheets.
+     * 
+     * @queryParam filters[employee] Filters by employee name. Example: Carlo Eusebi
+     * @queryParam filters[project] Filters by project name. Example: Youvolution
+     * @queryParam filters[activity] Filters by activity name. Example: Development
+     * @queryParam filters[dateFrom] Filters by date. Example: 2023-28-09
+     * @queryParam filters[dateTo] Filters by date. Example: 2023-29-09
+     * 
+     * 
      */
     public function index(Request $request)
     {
@@ -56,7 +66,11 @@ class TimesheetController extends Controller
     }
 
     /**
-     * Store a newly created resource in storage.
+     * Log a new timesheet.
+     * 
+     * @bodyParam project_id string required The ID of the Project. Example: 1
+     * @bodyParam activity_id string required The ID of the Activity. Example: 1
+     * 
      */
     public function store(TimesheetStoreRequest $request)
     {
@@ -65,11 +79,12 @@ class TimesheetController extends Controller
         $data['user_id'] = $request->user()->id;
 
         $timesheet = Timesheet::create($data);
-        return response()->json($timesheet);
+        return response()->json($timesheet, 201);
     }
 
     /**
-     * Display the specified resource.
+     * Display the specified Timesheet.
+     * 
      */
     public function show(string $id)
     {
@@ -78,7 +93,7 @@ class TimesheetController extends Controller
     }
 
     /**
-     * Update the specified resource in storage.
+     * Updates an existing Timesheet.
      */
     public function update(TimesheetUpdateRequest $request, string $id)
     {
@@ -92,14 +107,5 @@ class TimesheetController extends Controller
         $timesheet->load('activity', 'project');
 
         return response()->json($timesheet);
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(string $id)
-    {
-        return response(status: 404);
-        // Timesheets should be deletable.
     }
 }
