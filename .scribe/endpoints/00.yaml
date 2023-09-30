@@ -26,7 +26,7 @@ endpoints:
         name: email
         description: 'Must be a valid email address.'
         required: true
-        example: estracke@example.org
+        example: jorge27@example.org
         type: string
         enumValues: []
         custom: []
@@ -34,13 +34,13 @@ endpoints:
         name: password
         description: ''
         required: true
-        example: autem
+        example: labore
         type: string
         enumValues: []
         custom: []
     cleanBodyParameters:
-      email: estracke@example.org
-      password: autem
+      email: jorge27@example.org
+      password: labore
     fileParameters: []
     responses: []
     responseFields: []
@@ -188,13 +188,10 @@ endpoints:
     fileParameters: []
     responses:
       -
-        status: 401
-        content: '{"message":"Unauthenticated."}'
-        headers:
-          cache-control: 'no-cache, private'
-          content-type: application/json
-          vary: Origin
-        description: null
+        status: 200
+        content: '{"data":[{"id":1,"userId":10,"projectId":2,"activityId":3,"employee":"Deangelo Harvey","project":"Youvolution","activity":"Testing","activityStart":"2023-01-04 12:57:15","activityEnd":"2023-01-04 16:46:15","description":"Aut laudantium qui rerum. Repudiandae dolor laboriosam qui consequatur magnam omnis. Rerum est deserunt dolore saepe. Alias ut ut dignissimos qui. Voluptas esse esse quo dolores id. Alias est et quo ut et et. Expedita occaecati unde vitae atque sequi qui. Incidunt sequi aut ea consequatur. Nihil quo ea fuga et ut facere at dolorem."},{"id":1,"userId":10,"projectId":2,"activityId":3,"employee":"Deangelo Harvey","project":"Youvolution","activity":"Testing","activityStart":"2023-01-04 12:57:15","activityEnd":"2023-01-04 16:46:15","description":"Aut laudantium qui rerum. Repudiandae dolor laboriosam qui consequatur magnam omnis. Rerum est deserunt dolore saepe. Alias ut ut dignissimos qui. Voluptas esse esse quo dolores id. Alias est et quo ut et et. Expedita occaecati unde vitae atque sequi qui. Incidunt sequi aut ea consequatur. Nihil quo ea fuga et ut facere at dolorem."}],"links":{"first":"\/?page=1","last":"\/?page=1","prev":null,"next":null},"meta":{"current_page":1,"from":1,"last_page":1,"links":[{"url":null,"label":"&laquo; Previous","active":false},{"url":"\/?page=1","label":"1","active":true},{"url":null,"label":"Next &raquo;","active":false}],"path":"\/","per_page":10,"to":2,"total":2}}'
+        headers: []
+        description: ''
         custom: []
     responseFields: []
     auth: []
@@ -243,7 +240,7 @@ endpoints:
         name: activity_start
         description: 'Must be a valid date.'
         required: true
-        example: '2023-09-29T07:14:22'
+        example: '2023-09-30T07:00:24'
         type: string
         enumValues: []
         custom: []
@@ -251,7 +248,7 @@ endpoints:
         name: activity_end
         description: 'Must be a valid date.'
         required: true
-        example: '2023-09-29T07:14:22'
+        example: '2023-09-30T07:00:24'
         type: string
         enumValues: []
         custom: []
@@ -259,18 +256,30 @@ endpoints:
         name: description
         description: ''
         required: true
-        example: perspiciatis
+        example: tempore
         type: string
         enumValues: []
         custom: []
     cleanBodyParameters:
       project_id: '1'
       activity_id: '1'
-      activity_start: '2023-09-29T07:14:22'
-      activity_end: '2023-09-29T07:14:22'
-      description: perspiciatis
+      activity_start: '2023-09-30T07:00:24'
+      activity_end: '2023-09-30T07:00:24'
+      description: tempore
     fileParameters: []
-    responses: []
+    responses:
+      -
+        status: 200
+        content: '{"id":1,"userId":10,"projectId":2,"activityId":3,"employee":"Deangelo Harvey","project":"Youvolution","activity":"Testing","activityStart":"2023-01-04 12:57:15","activityEnd":"2023-01-04 16:46:15","description":"Aut laudantium qui rerum. Repudiandae dolor laboriosam qui consequatur magnam omnis. Rerum est deserunt dolore saepe. Alias ut ut dignissimos qui. Voluptas esse esse quo dolores id. Alias est et quo ut et et. Expedita occaecati unde vitae atque sequi qui. Incidunt sequi aut ea consequatur. Nihil quo ea fuga et ut facere at dolorem."}'
+        headers: []
+        description: ''
+        custom: []
+      -
+        status: 422
+        content: '{["error": "message"]}'
+        headers: []
+        description: ''
+        custom: []
     responseFields: []
     auth: []
     controller: null
@@ -298,12 +307,12 @@ endpoints:
         name: id
         description: 'The ID of the timesheet.'
         required: true
-        example: minus
-        type: string
+        example: 1
+        type: integer
         enumValues: []
         custom: []
     cleanUrlParameters:
-      id: minus
+      id: 1
     queryParameters: []
     cleanQueryParameters: []
     bodyParameters: []
@@ -311,13 +320,16 @@ endpoints:
     fileParameters: []
     responses:
       -
-        status: 401
-        content: '{"message":"Unauthenticated."}'
-        headers:
-          cache-control: 'no-cache, private'
-          content-type: application/json
-          vary: Origin
-        description: null
+        status: 200
+        content: '{"id":1,"userId":10,"projectId":2,"activityId":3,"employee":"Deangelo Harvey","project":"Youvolution","activity":"Testing","activityStart":"2023-01-04 12:57:15","activityEnd":"2023-01-04 16:46:15","description":"Aut laudantium qui rerum. Repudiandae dolor laboriosam qui consequatur magnam omnis. Rerum est deserunt dolore saepe. Alias ut ut dignissimos qui. Voluptas esse esse quo dolores id. Alias est et quo ut et et. Expedita occaecati unde vitae atque sequi qui. Incidunt sequi aut ea consequatur. Nihil quo ea fuga et ut facere at dolorem."}'
+        headers: []
+        description: ''
+        custom: []
+      -
+        status: 404
+        content: '{"errors": "Timesheet not found"}'
+        headers: []
+        description: ''
         custom: []
     responseFields: []
     auth: []
@@ -347,28 +359,28 @@ endpoints:
         name: id
         description: 'The ID of the timesheet.'
         required: true
-        example: veritatis
-        type: string
+        example: 1
+        type: integer
         enumValues: []
         custom: []
     cleanUrlParameters:
-      id: veritatis
+      id: 1
     queryParameters: []
     cleanQueryParameters: []
     bodyParameters:
       project_id:
         name: project_id
-        description: ''
+        description: 'The ID of the Project.'
         required: true
-        example: ea
+        example: '1'
         type: string
         enumValues: []
         custom: []
       activity_id:
         name: activity_id
-        description: ''
+        description: 'The ID of the Activity.'
         required: true
-        example: aut
+        example: '1'
         type: string
         enumValues: []
         custom: []
@@ -376,7 +388,7 @@ endpoints:
         name: activity_start
         description: 'Must be a valid date.'
         required: true
-        example: '2023-09-29T07:14:22'
+        example: '2023-09-30T07:00:24'
         type: string
         enumValues: []
         custom: []
@@ -384,7 +396,7 @@ endpoints:
         name: activity_end
         description: 'Must be a valid date.'
         required: true
-        example: '2023-09-29T07:14:22'
+        example: '2023-09-30T07:00:24'
         type: string
         enumValues: []
         custom: []
@@ -392,18 +404,36 @@ endpoints:
         name: description
         description: ''
         required: true
-        example: placeat
+        example: quia
         type: string
         enumValues: []
         custom: []
     cleanBodyParameters:
-      project_id: ea
-      activity_id: aut
-      activity_start: '2023-09-29T07:14:22'
-      activity_end: '2023-09-29T07:14:22'
-      description: placeat
+      project_id: '1'
+      activity_id: '1'
+      activity_start: '2023-09-30T07:00:24'
+      activity_end: '2023-09-30T07:00:24'
+      description: quia
     fileParameters: []
-    responses: []
+    responses:
+      -
+        status: 200
+        content: '{"id":1,"userId":10,"projectId":2,"activityId":3,"employee":"Deangelo Harvey","project":"Youvolution","activity":"Testing","activityStart":"2023-01-04 12:57:15","activityEnd":"2023-01-04 16:46:15","description":"Aut laudantium qui rerum. Repudiandae dolor laboriosam qui consequatur magnam omnis. Rerum est deserunt dolore saepe. Alias ut ut dignissimos qui. Voluptas esse esse quo dolores id. Alias est et quo ut et et. Expedita occaecati unde vitae atque sequi qui. Incidunt sequi aut ea consequatur. Nihil quo ea fuga et ut facere at dolorem."}'
+        headers: []
+        description: ''
+        custom: []
+      -
+        status: 404
+        content: '{"errors": "Timesheet not found"}'
+        headers: []
+        description: ''
+        custom: []
+      -
+        status: 422
+        content: '{["error": "message"]}'
+        headers: []
+        description: ''
+        custom: []
     responseFields: []
     auth: []
     controller: null
@@ -474,7 +504,7 @@ endpoints:
         name: name
         description: ''
         required: true
-        example: ex
+        example: rerum
         type: string
         enumValues: []
         custom: []
@@ -495,7 +525,7 @@ endpoints:
         enumValues: []
         custom: []
     cleanBodyParameters:
-      name: ex
+      name: rerum
     fileParameters: []
     responses: []
     responseFields: []
@@ -525,12 +555,12 @@ endpoints:
         name: id
         description: 'The ID of the project.'
         required: true
-        example: dolor
-        type: string
+        example: 1
+        type: integer
         enumValues: []
         custom: []
     cleanUrlParameters:
-      id: dolor
+      id: 1
     queryParameters: []
     cleanQueryParameters: []
     bodyParameters: []
@@ -574,12 +604,12 @@ endpoints:
         name: id
         description: 'The ID of the project.'
         required: true
-        example: sit
-        type: string
+        example: 1
+        type: integer
         enumValues: []
         custom: []
     cleanUrlParameters:
-      id: sit
+      id: 1
     queryParameters: []
     cleanQueryParameters: []
     bodyParameters:
@@ -587,7 +617,7 @@ endpoints:
         name: name
         description: ''
         required: true
-        example: ipsum
+        example: a
         type: string
         enumValues: []
         custom: []
@@ -608,7 +638,7 @@ endpoints:
         enumValues: []
         custom: []
     cleanBodyParameters:
-      name: ipsum
+      name: a
     fileParameters: []
     responses: []
     responseFields: []
@@ -638,12 +668,12 @@ endpoints:
         name: id
         description: 'The ID of the project.'
         required: true
-        example: sit
-        type: string
+        example: 1
+        type: integer
         enumValues: []
         custom: []
     cleanUrlParameters:
-      id: sit
+      id: 1
     queryParameters: []
     cleanQueryParameters: []
     bodyParameters: []
@@ -720,12 +750,12 @@ endpoints:
         name: name
         description: ''
         required: true
-        example: sint
+        example: sit
         type: string
         enumValues: []
         custom: []
     cleanBodyParameters:
-      name: sint
+      name: sit
     fileParameters: []
     responses: []
     responseFields: []
@@ -755,12 +785,12 @@ endpoints:
         name: id
         description: 'The ID of the activity.'
         required: true
-        example: qui
-        type: string
+        example: 1
+        type: integer
         enumValues: []
         custom: []
     cleanUrlParameters:
-      id: qui
+      id: 1
     queryParameters: []
     cleanQueryParameters: []
     bodyParameters: []
@@ -804,12 +834,12 @@ endpoints:
         name: id
         description: 'The ID of the activity.'
         required: true
-        example: ab
-        type: string
+        example: 1
+        type: integer
         enumValues: []
         custom: []
     cleanUrlParameters:
-      id: ab
+      id: 1
     queryParameters: []
     cleanQueryParameters: []
     bodyParameters:
@@ -851,12 +881,12 @@ endpoints:
         name: id
         description: 'The ID of the activity.'
         required: true
-        example: accusamus
-        type: string
+        example: 1
+        type: integer
         enumValues: []
         custom: []
     cleanUrlParameters:
-      id: accusamus
+      id: 1
     queryParameters: []
     cleanQueryParameters: []
     bodyParameters: []
@@ -933,7 +963,7 @@ endpoints:
         name: name
         description: ''
         required: true
-        example: voluptatem
+        example: quis
         type: string
         enumValues: []
         custom: []
@@ -941,13 +971,13 @@ endpoints:
         name: email
         description: 'Must be a valid email address.'
         required: true
-        example: joesph88@example.net
+        example: davis.timmothy@example.net
         type: string
         enumValues: []
         custom: []
     cleanBodyParameters:
-      name: voluptatem
-      email: joesph88@example.net
+      name: quis
+      email: davis.timmothy@example.net
     fileParameters: []
     responses: []
     responseFields: []
@@ -977,12 +1007,12 @@ endpoints:
         name: id
         description: 'The ID of the user.'
         required: true
-        example: sit
-        type: string
+        example: 1
+        type: integer
         enumValues: []
         custom: []
     cleanUrlParameters:
-      id: sit
+      id: 1
     queryParameters: []
     cleanQueryParameters: []
     bodyParameters: []
@@ -1026,12 +1056,12 @@ endpoints:
         name: id
         description: 'The ID of the user.'
         required: true
-        example: est
-        type: string
+        example: 1
+        type: integer
         enumValues: []
         custom: []
     cleanUrlParameters:
-      id: est
+      id: 1
     queryParameters: []
     cleanQueryParameters: []
     bodyParameters:
@@ -1039,7 +1069,7 @@ endpoints:
         name: name
         description: ''
         required: true
-        example: rerum
+        example: exercitationem
         type: string
         enumValues: []
         custom: []
@@ -1047,13 +1077,13 @@ endpoints:
         name: email
         description: 'Must be a valid email address.'
         required: true
-        example: mercedes.marvin@example.org
+        example: lisandro97@example.net
         type: string
         enumValues: []
         custom: []
     cleanBodyParameters:
-      name: rerum
-      email: mercedes.marvin@example.org
+      name: exercitationem
+      email: lisandro97@example.net
     fileParameters: []
     responses: []
     responseFields: []
@@ -1083,12 +1113,12 @@ endpoints:
         name: id
         description: 'The ID of the user.'
         required: true
-        example: libero
-        type: string
+        example: 1
+        type: integer
         enumValues: []
         custom: []
     cleanUrlParameters:
-      id: libero
+      id: 1
     queryParameters: []
     cleanQueryParameters: []
     bodyParameters: []

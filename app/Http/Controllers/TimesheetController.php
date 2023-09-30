@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\TimesheetStoreRequest;
 use App\Http\Requests\TimesheetUpdateRequest;
+use App\Http\Resources\TimesheetCollection;
+use App\Http\Resources\TimesheetResource;
 use App\Models\Timesheet;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -21,7 +23,8 @@ class TimesheetController extends Controller
      * @queryParam filters[dateFrom] Filters by date. Example: 2023-28-09
      * @queryParam filters[dateTo] Filters by date. Example: 2023-29-09
      * 
-     * 
+     * @apiResourceCollection App\Http\Resources\TimesheetCollection
+     * @apiResourceModel App\Models\Timesheet paginate=10
      */
     public function index(Request $request)
     {
@@ -62,7 +65,7 @@ class TimesheetController extends Controller
         }
         $timesheets = $query->paginate(10);
 
-        return response()->json($timesheets);
+        return new TimesheetCollection($timesheets);
     }
 
     /**
@@ -71,6 +74,9 @@ class TimesheetController extends Controller
      * @bodyParam project_id string required The ID of the Project. Example: 1
      * @bodyParam activity_id string required The ID of the Activity. Example: 1
      * 
+     * @response 422 {["error": "message"]}
+     * @apiResource App\Http\Resources\TimesheetResource
+     * @apiResourceModel App\Models\Timesheet
      */
     public function store(TimesheetStoreRequest $request)
     {
@@ -79,21 +85,43 @@ class TimesheetController extends Controller
         $data['user_id'] = $request->user()->id;
 
         $timesheet = Timesheet::create($data);
-        return response()->json($timesheet, 201);
+        return new TimesheetResource($timesheet);
     }
 
     /**
-     * Display the specified Timesheet.
+     * Display the specified Timesheet. 
      * 
+     * @response 404 {"errors": "Timesheet not found"}
+     * 
+     * @apiResource App\Http\Resources\TimesheetResource
+     * @apiResourceModel App\Models\Timesheet
      */
     public function show(string $id)
     {
-        $timesheet = Timesheet::findOrFail($id);
-        return response()->json($timesheet);
+        /**
+         * @var User
+         */
+        $user = Auth::user();
+        $timesheet = $user->isAdmin() ? Timesheet::find($id) : Timesheet::where('user_id', $user->id)->find($id);
+
+        if (!$timesheet) {
+            return response()->json(['errors' => 'Timesheet not found'], 404);
+        }
+
+        return new TimesheetResource($timesheet);
     }
 
     /**
      * Updates an existing Timesheet.
+     * 
+     * @bodyParam project_id string required The ID of the Project. Example: 1
+     * @bodyParam activity_id string required The ID of the Activity. Example: 1
+     * 
+     * @response 404 {"errors": "Timesheet not found"}
+     * @response 422 {["error": "message"]}
+     * 
+     * @apiResource App\Http\Resources\TimesheetResource
+     * @apiResourceModel App\Models\Timesheet
      */
     public function update(TimesheetUpdateRequest $request, string $id)
     {
@@ -106,6 +134,6 @@ class TimesheetController extends Controller
         $timesheet->update($request->all());
         $timesheet->load('activity', 'project');
 
-        return response()->json($timesheet);
+        return new TimesheetResource($timesheet);
     }
 }

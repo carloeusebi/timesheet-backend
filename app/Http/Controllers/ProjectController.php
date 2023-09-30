@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\ProjectStoreRequest;
 use App\Http\Requests\ProjectUpdateRequest;
+use App\Http\Resources\ProjectResource;
 use App\Models\Project;
 use Illuminate\Support\Facades\Auth;
 
@@ -21,6 +22,7 @@ class ProjectController extends Controller
      * Returns a list of Projects.
      * 
      * Returns all the Users associated Projects. If User is Admin returns all the Projects.
+     * 
      */
     public function index()
     {
@@ -31,7 +33,7 @@ class ProjectController extends Controller
 
         // if user is employee (user) return only the projects assigned to him.
         $projects = $user->isAdmin() ? Project::all() : Project::whereRelation('users', 'users.id', $user->id)->get();
-        return response()->json($projects);
+        return ProjectResource::collection($projects);
     }
 
     /**
@@ -44,7 +46,7 @@ class ProjectController extends Controller
         $project->activities()->attach($request->activity_ids);
         $project->users()->attach($request->user_ids);
 
-        return response()->json($project->load('users')->load('activities'), 201);
+        return new ProjectResource($project);
     }
 
     /**
@@ -53,7 +55,7 @@ class ProjectController extends Controller
     public function show(string $id)
     {
         $project = Project::with('users')->findOrFail($id);
-        return response()->json($project);
+        return new ProjectResource($project);
     }
 
     /**
@@ -68,7 +70,7 @@ class ProjectController extends Controller
         $project->activities()->sync($request->activity_ids);
         $project->users()->sync($request->user_ids);
 
-        return response()->json($project->load('users')->load('activities'));
+        return new ProjectResource($project);
     }
 
     /**

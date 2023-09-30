@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Resources\ActivityResource;
 use App\Models\Activity;
 use Illuminate\Http\Request;
 use Illuminate\Notifications\Action;
@@ -13,7 +14,7 @@ class ActivityController extends Controller
      */
     public function __construct()
     {
-        $this->middleware('auth.admin')->except(['index']);
+        $this->middleware('auth.admin');
     }
 
     /**
@@ -22,7 +23,7 @@ class ActivityController extends Controller
     public function index()
     {
         $activities = Activity::all();
-        return response()->json($activities);
+        return ActivityResource::collection($activities);
     }
 
     /**
@@ -36,7 +37,7 @@ class ActivityController extends Controller
 
         $activity = Activity::create($request->only('name'));
 
-        return response()->json($activity, 201);
+        return new ActivityResource($activity);
     }
 
     /**
@@ -46,7 +47,7 @@ class ActivityController extends Controller
     {
         $activity = Activity::findOrFail($id);
 
-        return response()->json($activity);
+        return new ActivityResource($activity);
     }
 
     /**
@@ -61,7 +62,7 @@ class ActivityController extends Controller
         $activity = Activity::findOrFail($id);
         $activity->update($request->only('name'));
 
-        return response($activity);
+        return new ActivityResource($activity);
     }
 
     /**

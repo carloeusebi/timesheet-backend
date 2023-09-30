@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\UserStoreRequest;
 use App\Http\Requests\UserUpdateRequest;
+use App\Http\Resources\UserResource;
 use App\Models\Role;
 use App\Models\User;
 
@@ -14,7 +15,7 @@ class UserController extends Controller
      */
     public function __construct()
     {
-        $this->middleware('auth.admin')->except(['index']);
+        $this->middleware('auth.admin');
     }
 
     /**
@@ -24,7 +25,7 @@ class UserController extends Controller
     public function index()
     {
         $users = User::whereRelation('role', 'role', 'user')->get();
-        return response()->json($users);
+        return UserResource::collection($users);
     }
 
     /**
@@ -45,7 +46,7 @@ class UserController extends Controller
 
         $user = User::create($data);
 
-        return response()->json($user->load('role'));
+        return new UserResource($user);
     }
 
     /**
@@ -54,7 +55,7 @@ class UserController extends Controller
     public function show(string $id)
     {
         $user = User::findOrFail($id);
-        return response()->json($user);
+        return new UserResource($user);
     }
 
     /**

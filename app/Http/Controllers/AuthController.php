@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Resources\UserResource;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -48,13 +49,13 @@ class AuthController extends Controller
      */
     public function user()
     {
-        return response()->json(Auth::user());
+        return new UserResource(Auth::user());
     }
 
 
     protected function respondWithToken(User $user, string $token)
     {
         $cookie = cookie('token', $token, 60);
-        return response()->json($user)->withCookie($cookie);
+        return response(new UserResource($user))->withCookie($cookie);
     }
 }
