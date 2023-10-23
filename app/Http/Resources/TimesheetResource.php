@@ -19,7 +19,7 @@ class TimesheetResource extends JsonResource
             'userId' => $this->user_id,
             'projectId' => $this->project_id,
             'activityId' => $this->activity_id,
-            'employee' => $this->user->name,
+            'user' => $this->user->name,
             'project' => $this->project->name,
             'activity' => $this->activity->name,
             'date' => $this->date,

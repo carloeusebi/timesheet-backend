@@ -25,7 +25,15 @@ class ActivityController extends Controller
     {
         $defaultPerPage = 10;
         $perPage = $request->per_page ?? $defaultPerPage;
-        $activities = Activity::select()->paginate($perPage);
+
+        $query = Activity::select();
+
+        $orderBy = $request->order_by;
+        $direction = $request->direction;
+
+        if ($orderBy && $direction) $query->orderBy($orderBy, $direction);
+
+        $activities = $query->paginate($perPage);
 
         return new ActivityCollection($activities);
     }

@@ -37,6 +37,12 @@ class UserController extends Controller
 
         $query = User::select();
 
+        $orderBy = $request->input('order_by');
+        $direction = $request->input('direction');
+
+        if ($orderBy && $direction) $query->orderBy($orderBy, $direction);
+
+
         $nameFilter = $request->name ?? null;
         if ($nameFilter) $query->where('name', 'like', "%$nameFilter%");
 

@@ -37,7 +37,14 @@ class ProjectController extends Controller
 
         // if user is employee (user) return only the projects assigned to him.
         $query = $user->isAdmin() ? Project::select() : Project::whereRelation('users', 'users.id', $user->id);
+
+        $orderBy = $request->order_by;
+        $direction = $request->direction;
+
+        if ($orderBy && $direction) $query->orderBy($orderBy, $direction);
+
         $perPage = $request->per_page ?? $defaultPerPage;
+
         $projects = $query->paginate($perPage);
 
         return new ProjectCollection($projects);

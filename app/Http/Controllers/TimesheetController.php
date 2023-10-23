@@ -41,7 +41,12 @@ class TimesheetController extends Controller
         $dateTo = $request->get('date_to');
         $perPage = $request->get('per_page') ?? 10;
 
-        $query = Timesheet::orderBy('date', 'desc');
+        $column = $request->get('order_by') ?? 'date';
+        $direction = $request->get('direction') ?? 'desc';
+
+        if ($column === 'user') $column = 'users.name';
+
+        $query = Timesheet::orderBy($column, $direction);
         // Every user gets its profiled timesheets research: Admin can search between all timesheets OR can filter by User; User can see only its timesheets.
 
         if (!$user->isAdmin())
@@ -63,6 +68,7 @@ class TimesheetController extends Controller
         if ($dateTo) {
             $query->where('date', '<=', $dateTo);
         }
+
         $timesheets = $query->paginate($perPage);
 
         return new TimesheetCollection($timesheets);
