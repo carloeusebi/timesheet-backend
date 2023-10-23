@@ -24,6 +24,6 @@ class AuthenticateAdmin
             return $next($request);
         }
 
-        return response(['message' => 'Unauthorized.'], 401);
+        return response(['message' => 'Unauthorized.'], 403);
     }
 }

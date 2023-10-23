@@ -19,6 +19,25 @@ class ProjectStoreRequest extends FormRequest
         return $user->isAdmin();
     }
 
+
+    public function prepareForValidation()
+    {
+        $this->merge([
+            'userIds' => $this->user_ids,
+            'activityIds' => $this->activity_ids
+        ]);
+    }
+
+
+    public function attributes()
+    {
+        return [
+            'name' => 'Nome',
+            'userIds' => 'Impiegati',
+            'activityIds' => 'Attività'
+        ];
+    }
+
     /**
      * Get the validation rules that apply to the request.
      *
@@ -28,8 +47,8 @@ class ProjectStoreRequest extends FormRequest
     {
         return [
             'name' => 'required|unique:projects,name',
-            'user_ids' => 'nullable|exists:users,id',
-            'activity_ids' => 'nullable|exists:activities,id'
+            'userIds' => 'nullable|exists:users,id',
+            'activityIds' => 'nullable|exists:activities,id'
         ];
     }
 }

@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Resources\ActivityCollection;
 use App\Http\Resources\ActivityResource;
 use App\Models\Activity;
 use Illuminate\Http\Request;
@@ -20,10 +21,13 @@ class ActivityController extends Controller
     /**
      * List all the activities.
      */
-    public function index()
+    public function index(Request $request)
     {
-        $activities = Activity::all();
-        return ActivityResource::collection($activities);
+        $defaultPerPage = 10;
+        $perPage = $request->per_page ?? $defaultPerPage;
+        $activities = Activity::select()->paginate($perPage);
+
+        return new ActivityCollection($activities);
     }
 
     /**

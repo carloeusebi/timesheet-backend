@@ -22,8 +22,8 @@ class TimesheetResource extends JsonResource
             'employee' => $this->user->name,
             'project' => $this->project->name,
             'activity' => $this->activity->name,
-            'activityStart' => $this->activity_start,
-            'activityEnd' => $this->activity_end,
+            'date' => $this->date,
+            'hours' => $this->hours,
             'description' => $this->description,
         ];
     }

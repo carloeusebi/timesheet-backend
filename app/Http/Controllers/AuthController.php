@@ -49,7 +49,7 @@ class AuthController extends Controller
      */
     public function user()
     {
-        return new UserResource(Auth::user());
+        return Auth::user() ? new UserResource(Auth::user()) : response(status: 401);
     }
 
 

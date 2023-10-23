@@ -4,9 +4,12 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\UserStoreRequest;
 use App\Http\Requests\UserUpdateRequest;
+use App\Http\Resources\UserCollection;
 use App\Http\Resources\UserResource;
 use App\Models\Role;
 use App\Models\User;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class UserController extends Controller
 {
@@ -15,17 +18,33 @@ class UserController extends Controller
      */
     public function __construct()
     {
-        $this->middleware('auth.admin');
+        $this->middleware('auth.admin')->except('index');
     }
 
     /**
      * Return a list of the the Users.
      *
      */
-    public function index()
+    public function index(Request $request)
     {
-        $users = User::whereRelation('role', 'role', 'user')->get();
-        return UserResource::collection($users);
+        $defaultPerPage = 10;
+
+        /**
+         * @var User
+         */
+        $user = Auth::user();
+        if (!$user->isAdmin()) return new UserResource($user);
+
+        $query = User::select();
+
+        $nameFilter = $request->name ?? null;
+        if ($nameFilter) $query->where('name', 'like', "%$nameFilter%");
+
+        $perPage = $request->per_page ?? $defaultPerPage;
+
+        $users = $query->paginate($perPage);
+
+        return new UserCollection($users);
     }
 
     /**
@@ -54,7 +73,7 @@ class UserController extends Controller
      */
     public function show(string $id)
     {
-        $user = User::findOrFail($id);
+        $user = User::findOrFail($id)->load('projects:id,name');
         return new UserResource($user);
     }
 

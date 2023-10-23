@@ -33,15 +33,15 @@ class TimesheetController extends Controller
          */
         $user = Auth::user();
 
-
         // The Query parameters
         $userFilter = $request->get('employee'); //param name is employee, to improve query string readability
         $projectFilter = $request->get('project');
         $activityFilter = $request->get('activity');
         $dateFrom = $request->get('date_from');
         $dateTo = $request->get('date_to');
+        $perPage = $request->get('per_page') ?? 10;
 
-        $query = Timesheet::orderBy('activity_start', 'desc');
+        $query = Timesheet::orderBy('date', 'desc');
         // Every user gets its profiled timesheets research: Admin can search between all timesheets OR can filter by User; User can see only its timesheets.
 
         if (!$user->isAdmin())
@@ -58,12 +58,12 @@ class TimesheetController extends Controller
             $query->whereRelation('activity', 'name', 'like', "%$activityFilter%");
         }
         if ($dateFrom) {
-            $query->where('activity_start', '>', $dateFrom);
+            $query->where('date', '>=', $dateFrom);
         }
         if ($dateTo) {
-            $query->where('activity_end', '<', $dateTo);
+            $query->where('date', '<=', $dateTo);
         }
-        $timesheets = $query->paginate(10);
+        $timesheets = $query->paginate($perPage);
 
         return new TimesheetCollection($timesheets);
     }
@@ -102,11 +102,13 @@ class TimesheetController extends Controller
          * @var User
          */
         $user = Auth::user();
-        $timesheet = $user->isAdmin() ? Timesheet::find($id) : Timesheet::where('user_id', $user->id)->find($id);
+        $timesheet = Timesheet::find($id);
 
         if (!$timesheet) {
             return response()->json(['errors' => 'Timesheet not found'], 404);
         }
+
+        $this->authorize('view', $timesheet);
 
         return new TimesheetResource($timesheet);
     }
@@ -133,6 +135,8 @@ class TimesheetController extends Controller
         // updates the relations
         $timesheet->update($request->all());
         $timesheet->load('activity', 'project');
+
+        $this->authorize('update', $timesheet);
 
         return new TimesheetResource($timesheet);
     }

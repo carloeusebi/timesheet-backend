@@ -21,9 +21,9 @@ class TimesheetPolicy
      */
     public function view(User $user, Timesheet $timesheet): Response
     {
-        return $user->id === $timesheet->user_id
+        return $user->id === $timesheet->user_id || $user->isAdmin()
             ? Response::allow()
-            : Response::denyWithStatus(401);
+            : Response::denyWithStatus(403);
     }
 
     // /**
@@ -39,8 +39,8 @@ class TimesheetPolicy
      */
     public function update(User $user, Timesheet $timesheet): Response
     {
-        return $user->id === $timesheet->user_id
+        return $user->id === $timesheet->user_id || $user->isAdmin()
             ? Response::allow()
-            : Response::denyWithStatus(401);
+            : Response::denyWithStatus(403);
     }
 }

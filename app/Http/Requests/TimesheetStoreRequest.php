@@ -3,6 +3,7 @@
 namespace App\Http\Requests;
 
 use App\Models\Project;
+use App\Models\Timesheet;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Validator;
 
@@ -21,12 +22,15 @@ class TimesheetStoreRequest extends FormRequest
      */
     public function attributes()
     {
-        return [
-            'project_id' => 'project',
-            'activity_id' => 'activity',
-            'activity_start' => 'activity start',
-            'activity_end' => 'activity end',
-        ];
+        return Timesheet::labels();
+    }
+
+    public function prepareForValidation()
+    {
+        $this->merge([
+            'projectId' => $this->project_id,
+            'activityId' => $this->activity_id
+        ]);
     }
 
     /**
@@ -37,10 +41,10 @@ class TimesheetStoreRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'project_id' => 'required|exists:projects,id',
-            'activity_id' => 'required|exists:activities,id',
-            'activity_start' => 'required|date',
-            'activity_end' => 'required|date',
+            'projectId' => 'required|exists:projects,id',
+            'activityId' => 'required|exists:activities,id',
+            'date' => 'required|date',
+            'hours' => 'required|numeric|min:0.5,max:10',
             'description' => 'required'
         ];
     }

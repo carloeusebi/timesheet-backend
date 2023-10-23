@@ -4,8 +4,10 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\ProjectStoreRequest;
 use App\Http\Requests\ProjectUpdateRequest;
+use App\Http\Resources\ProjectCollection;
 use App\Http\Resources\ProjectResource;
 use App\Models\Project;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
 class ProjectController extends Controller
@@ -24,16 +26,21 @@ class ProjectController extends Controller
      * Returns all the Users associated Projects. If User is Admin returns all the Projects.
      * 
      */
-    public function index()
+    public function index(Request $request)
     {
         /**
          * @var User
          */
         $user = Auth::user();
 
+        $defaultPerPage = 10;
+
         // if user is employee (user) return only the projects assigned to him.
-        $projects = $user->isAdmin() ? Project::all() : Project::whereRelation('users', 'users.id', $user->id)->get();
-        return ProjectResource::collection($projects);
+        $query = $user->isAdmin() ? Project::select() : Project::whereRelation('users', 'users.id', $user->id);
+        $perPage = $request->per_page ?? $defaultPerPage;
+        $projects = $query->paginate($perPage);
+
+        return new ProjectCollection($projects);
     }
 
     /**

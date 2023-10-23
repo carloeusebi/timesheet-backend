@@ -9,9 +9,20 @@ class Timesheet extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['user_id', 'project_id', 'activity_id', 'activity_start', 'activity_end', 'description'];
+    protected $fillable = ['user_id', 'project_id', 'activity_id', 'date', 'hours', 'description'];
 
     protected $with = ['user', 'project', 'activity'];
+
+    static function labels()
+    {
+        return [
+            'projectId' => 'Progetto',
+            'activityId' => 'Attività',
+            'date' => 'Data',
+            'hours' => 'Ore',
+            'description' => 'Descrizione'
+        ];
+    }
 
     public function user()
     {

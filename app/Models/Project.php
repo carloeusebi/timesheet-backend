@@ -12,7 +12,7 @@ class Project extends Model
 
     protected $fillable = ['name'];
 
-    protected $with = ['activities'];
+    protected $hidden = ['pivot'];
 
     public function activities()
     {

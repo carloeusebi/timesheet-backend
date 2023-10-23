@@ -13,11 +13,11 @@ return new class extends Migration
     {
         Schema::create('timesheets', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('user_id')->constrained()->cascadeOnDelete();
-            $table->foreignId('project_id')->nullOnDelete()->nullable();
-            $table->foreignId('activity_id')->nullOnDelete()->nullable();
+            $table->foreignId('user_id')->nullable()->constrained()->cascadeOnDelete();
+            $table->foreignId('project_id')->nullable()->nullOnDelete()->nullable();
+            $table->foreignId('activity_id')->nullable()->nullOnDelete()->nullable();
             $table->date('date');
-            $table->unsignedTinyInteger('hours');
+            $table->float('hours');
             $table->text('description');
             $table->timestamps();
         });

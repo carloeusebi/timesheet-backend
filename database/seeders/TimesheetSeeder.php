@@ -18,31 +18,58 @@ class TimesheetSeeder extends Seeder
      */
     public function run(Generator $faker): void
     {
-        $NUMBER_OF_TIMESHEETS = 100;
+        // $NUMBER_OF_TIMESHEETS = 100;
 
-        $i = 0;
-        while ($i < $NUMBER_OF_TIMESHEETS) {
 
-            $user = User::inRandomOrder()->first();
+        // $i = 0;
+        // while ($i < $NUMBER_OF_TIMESHEETS) {
 
-            $project = Project::whereRelation('users', 'user_id', $user->id)->inRandomOrder()->first();
-            if (!$project) continue; // if a user has no project assigned;
+        //     $user = User::inRandomOrder()->first();
 
-            $activity = Activity::whereRelation('projects', 'project_id', $project->id)->inRandomOrder()->first();
-            if (!$activity) continue; //if a project has no activity assigned;
+        //     $project = Project::whereRelation('users', 'user_id', $user->id)->inRandomOrder()->first();
+        //     if (!$project) continue; // if a user has no project assigned;
 
-            $activity_start = $faker->dateTimeBetween('-2 years');
+        //     $activity = Activity::whereRelation('projects', 'project_id', $project->id)->inRandomOrder()->first();
+        //     if (!$activity) continue; //if a project has no activity assigned;
 
-            Timesheet::create([
-                'user_id' => $user->id,
-                'project_id' => $project->id,
-                'activity_id' => $activity->id,
-                'activity_start' => $activity_start,
-                'activity_end' => Carbon::parse($activity_start)->addMinutes(rand(60, 60 * 8)),
-                'description' => $faker->text(500),
-            ]);
+        //     Timesheet::create([
+        //         'user_id' => $user->id,
+        //         'project_id' => $project->id,
+        //         'activity_id' => $activity->id,
+        //         'date' => $faker->dateTimeBetween('-5 years'),
+        //         'hours' => rand(1, 16) / 2,
+        //         'description' => $faker->text(500),
+        //     ]);
 
-            $i++;
+        //     $i++;
+        // }
+
+        $users = User::all();
+
+        foreach ($users as $user) {
+            $startDate = Carbon::parse('2023-08-01');
+            $endDate = Carbon::now();
+
+            if ($user->projects->count() === 0) continue;
+
+            while ($startDate->lte($endDate)) {
+
+                $startDate->addDay();
+
+                $project = $user->projects()->inRandomOrder()->first();
+
+                if ($project->activities->count() === 0) continue;
+                $activity = $project->activities()->inRandomOrder()->first();
+
+                Timesheet::create([
+                    'user_id' => $user->id,
+                    'project_id' => $project->id,
+                    'activity_id' => $activity->id,
+                    'description' => $faker->text(500),
+                    'date' => $startDate,
+                    'hours' => 8,
+                ]);
+            }
         }
     }
 }
