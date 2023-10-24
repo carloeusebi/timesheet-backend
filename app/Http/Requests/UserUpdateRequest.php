@@ -19,6 +19,13 @@ class UserUpdateRequest extends FormRequest
         return $user->isAdmin();
     }
 
+    public function prepareForValidation()
+    {
+        $this->merge([
+            'roleId' => $this->role_id
+        ]);
+    }
+
     /**
      * Get the validation rules that apply to the request.
      *
@@ -29,7 +36,8 @@ class UserUpdateRequest extends FormRequest
         $id = request()->route('user');
         return [
             'name' => 'required',
-            'email' => "required|string|email:filter|unique:users,email,$id"
+            'email' => "required|string|email:filter|unique:users,email,$id",
+            'roleId' => 'required|exists:roles,id',
         ];
     }
 }

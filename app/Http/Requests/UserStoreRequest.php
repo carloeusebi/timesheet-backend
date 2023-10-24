@@ -19,6 +19,13 @@ class UserStoreRequest extends FormRequest
         return $user->isAdmin();
     }
 
+    public function prepareForValidation()
+    {
+        $this->merge([
+            'roleId' => $this->role_id
+        ]);
+    }
+
     /**
      * Get the validation rules that apply to the request.
      *
@@ -28,7 +35,8 @@ class UserStoreRequest extends FormRequest
     {
         return [
             'name' => 'required',
-            'email' => 'required|string|email:filter|unique:users,email'
+            'email' => 'required|string|email:filter|unique:users,email',
+            'roleId' => 'required|exists:roles,id',
         ];
     }
 }

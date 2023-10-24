@@ -88,7 +88,7 @@ class TimesheetController extends Controller
     {
         $data = $request->all();
 
-        $data['user_id'] = $request->user()->id;
+        $data['user_id'] ??= $request->user()->id;
 
         $timesheet = Timesheet::create($data);
         return new TimesheetResource($timesheet);

@@ -4,7 +4,9 @@ namespace App\Http\Requests;
 
 use App\Models\Project;
 use App\Models\Timesheet;
+use App\Models\User;
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Validation\Validator;
 
 class TimesheetStoreRequest extends FormRequest
@@ -28,6 +30,7 @@ class TimesheetStoreRequest extends FormRequest
     public function prepareForValidation()
     {
         $this->merge([
+            'userId' => $this->user_id,
             'projectId' => $this->project_id,
             'activityId' => $this->activity_id
         ]);
@@ -41,6 +44,7 @@ class TimesheetStoreRequest extends FormRequest
     public function rules(): array
     {
         return [
+            'userId' => 'nullable|exists:users,id|',
             'projectId' => 'required|exists:projects,id',
             'activityId' => 'required|exists:activities,id',
             'date' => 'required|date',
@@ -59,13 +63,20 @@ class TimesheetStoreRequest extends FormRequest
         if ($validator->errors()->all()) return;
 
         $validator->after(function ($validator) {
+            $userId = $this->input('userId') ?? Auth::user()->id;
             $projectId = $this->input('project_id');
             $activityId = $this->input('activity_id');
 
-            $relationExists = Project::find($projectId)->activities()->where('activity_id', $activityId)->count();
+            $project = Project::find($projectId);
+            $activityProjectRelationExists = $project->activities()->where('activity_id', $activityId)->count();
+            if (!$activityProjectRelationExists) {
+                $validator->errors()->add('activityId', 'Activity doesn\'t exists on Project');
+            }
 
-            if (!$relationExists) {
-                $validator->errors()->add('activity_id', 'Activity doesn\'t exists on Project');
+            $user = User::find($userId);
+            $projectUserRelationExists = $user->projects()->where('project_id', $projectId)->count();
+            if (!$projectUserRelationExists) {
+                $validator->errors()->add('projectId', "{$user->name} is not assigned to the {$project->name}.");
             }
         });
     }

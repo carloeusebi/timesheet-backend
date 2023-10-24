@@ -33,7 +33,6 @@ class UserController extends Controller
          * @var User
          */
         $user = Auth::user();
-        if (!$user->isAdmin()) return new UserResource($user);
 
         $query = User::select();
 
@@ -42,6 +41,7 @@ class UserController extends Controller
 
         if ($orderBy && $direction) $query->orderBy($orderBy, $direction);
 
+        if (!$user->isAdmin()) $query->where('id', $user->id);
 
         $nameFilter = $request->name ?? null;
         if ($nameFilter) $query->where('name', 'like', "%$nameFilter%");
@@ -65,10 +65,6 @@ class UserController extends Controller
         $password = str_replace(' ', '.', strtolower($request->name));
         $data['password'] = bcrypt($password);
 
-        // assign the user role id
-        $userRoleId = Role::where('role', 'user')->pluck('id')->first();
-        $data['role_id'] = $userRoleId;
-
         $user = User::create($data);
 
         return new UserResource($user);
@@ -89,7 +85,7 @@ class UserController extends Controller
     public function update(UserUpdateRequest $request, string $id)
     {
         $user = User::findOrFail($id);
-        $user->update($request->only('name', 'email'));
+        $user->update($request->only('name', 'email', 'role_id'));
         return response()->json($user);
     }
 
