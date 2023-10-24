@@ -48,7 +48,7 @@ class TimesheetSeeder extends Seeder
 
         foreach ($users as $user) {
             $startDate = Carbon::parse('2023-08-01');
-            $endDate = Carbon::now();
+            $endDate = Carbon::yesterday();
 
             if ($user->projects->count() === 0) continue;
 

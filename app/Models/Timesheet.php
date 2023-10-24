@@ -16,6 +16,7 @@ class Timesheet extends Model
     static function labels()
     {
         return [
+            'userId' => 'Impiegato',
             'projectId' => 'Progetto',
             'activityId' => 'Attività',
             'date' => 'Data',

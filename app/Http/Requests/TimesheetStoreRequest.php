@@ -2,6 +2,7 @@
 
 namespace App\Http\Requests;
 
+use App\Models\Activity;
 use App\Models\Project;
 use App\Models\Timesheet;
 use App\Models\User;
@@ -68,15 +69,17 @@ class TimesheetStoreRequest extends FormRequest
             $activityId = $this->input('activity_id');
 
             $project = Project::find($projectId);
+            $user = User::find($userId);
+            $activity = Activity::find($activityId);
+
             $activityProjectRelationExists = $project->activities()->where('activity_id', $activityId)->count();
             if (!$activityProjectRelationExists) {
-                $validator->errors()->add('activityId', 'Activity doesn\'t exists on Project');
+                $validator->errors()->add('activityId', "{$activity->name} non esiste su {$project->name}");
             }
 
-            $user = User::find($userId);
             $projectUserRelationExists = $user->projects()->where('project_id', $projectId)->count();
             if (!$projectUserRelationExists) {
-                $validator->errors()->add('projectId', "{$user->name} is not assigned to the {$project->name}.");
+                $validator->errors()->add('projectId', "{$user->name} non è assegnato a {$project->name}.");
             }
         });
     }
