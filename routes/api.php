@@ -27,6 +27,8 @@ Route::prefix('auth')->group(function () {
 
 
 Route::middleware('auth:api')->group(function () {
+    Route::get('projects/hours', [ProjectController::class, 'calculateHours']);
+
     Route::apiResource('timesheets', TimesheetController::class);
     Route::apiResource('projects', ProjectController::class);
     Route::apiResource('activities', ActivityController::class);

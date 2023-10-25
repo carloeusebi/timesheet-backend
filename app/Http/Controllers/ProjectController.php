@@ -7,6 +7,7 @@ use App\Http\Requests\ProjectUpdateRequest;
 use App\Http\Resources\ProjectCollection;
 use App\Http\Resources\ProjectResource;
 use App\Models\Project;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
@@ -45,7 +46,7 @@ class ProjectController extends Controller
 
         $perPage = $request->per_page ?? $defaultPerPage;
 
-        $projects = $query->paginate($perPage);
+        $projects = $query->with('users')->paginate($perPage);
 
         return new ProjectCollection($projects);
     }
@@ -68,7 +69,7 @@ class ProjectController extends Controller
      */
     public function show(string $id)
     {
-        $project = Project::with('users')->findOrFail($id);
+        $project = Project::with('users', 'activities')->findOrFail($id);
         return new ProjectResource($project);
     }
 
@@ -95,5 +96,33 @@ class ProjectController extends Controller
         $project = Project::findOrFail($id);
         $project->delete();
         return response(status: 204);
+    }
+
+    public function calculateHours(Request $request)
+    {
+        $request->validate([
+            'date_from' => 'required|date',
+            'date_to' => 'required|date',
+        ]);
+
+        $timezone = config('app.timezone');
+        $dateRange = [];
+        $dateRange['from'] = Carbon::parse($request->date_from)->timezone($timezone);
+        $dateRange['to'] = Carbon::parse($request->date_to)->timezone($timezone);
+
+        $projects = Project::all();
+
+        $projects->each(function ($project) use ($dateRange) {
+            $project->activities->each(function ($activity) use ($dateRange, $project) {
+
+                $activity->hours = $project->timesheets()
+                    ->where('activity_id', $activity->id)
+                    ->whereBetween('date', [$dateRange['from'], $dateRange['to']])
+                    ->sum('hours');
+            });
+        });
+
+
+        return ProjectResource::collection($projects);
     }
 }

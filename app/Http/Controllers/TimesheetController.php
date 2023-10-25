@@ -7,6 +7,7 @@ use App\Http\Requests\TimesheetUpdateRequest;
 use App\Http\Resources\TimesheetCollection;
 use App\Http\Resources\TimesheetResource;
 use App\Models\Timesheet;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
@@ -33,12 +34,14 @@ class TimesheetController extends Controller
          */
         $user = Auth::user();
 
+        $timezone = config('app.timezone');
+
         // The Query parameters
         $userFilter = $request->get('employee'); //param name is employee, to improve query string readability
         $projectFilter = $request->get('project');
         $activityFilter = $request->get('activity');
-        $dateFrom = $request->get('date_from');
-        $dateTo = $request->get('date_to');
+        $dateFrom = Carbon::parse($request->get('date_from'))->timezone($timezone);
+        $dateTo = Carbon::parse($request->get('date_to'))->timezone($timezone);
         $perPage = $request->get('per_page') ?? 10;
 
         $column = $request->get('order_by') ?? 'date';

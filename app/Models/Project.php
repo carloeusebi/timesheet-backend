@@ -23,4 +23,9 @@ class Project extends Model
     {
         return $this->belongsToMany(User::class);
     }
+
+    public function timesheets()
+    {
+        return $this->hasMany(Timesheet::class);
+    }
 }
