@@ -65,10 +65,10 @@ class TimesheetController extends Controller
         if ($activityFilter) {
             $query->whereRelation('activity', 'name', 'like', "%$activityFilter%");
         }
-        if ($dateFrom) {
+        if ($request->date_from) {
             $query->where('date', '>=', $dateFrom);
         }
-        if ($dateTo) {
+        if ($request->date_to) {
             $query->where('date', '<=', $dateTo);
         }
 
